@@ -1,0 +1,11 @@
+"""Run directly from this folder without installing the workbench."""
+import os
+import sys
+import FreeCADGui as Gui
+
+folder = os.path.dirname(__file__)
+if folder not in sys.path:
+    sys.path.insert(0, folder)
+from joint_splitter.commands import register
+register()
+Gui.runCommand("JointSplitter_Split")

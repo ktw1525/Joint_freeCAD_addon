@@ -1,0 +1,28 @@
+"""User-run installer. Copies only the add-on files into FreeCAD's user Mod dir."""
+import os
+import shutil
+import FreeCAD as App
+import FreeCADGui as Gui
+try:
+    from PySide import QtWidgets
+except ImportError:
+    from PySide import QtGui as QtWidgets
+
+source_dir = os.path.dirname(os.path.abspath(__file__))
+target_dir = os.path.join(App.getUserAppDataDir(), "Mod", "JointSplitter")
+proceed = True
+if os.path.normcase(source_dir) == os.path.normcase(os.path.abspath(target_dir)):
+    QtWidgets.QMessageBox.information(Gui.getMainWindow(), "Joint Splitter", "이미 설치 폴더에 있습니다. FreeCAD를 재시작하세요.")
+    proceed = False
+elif os.path.exists(target_dir):
+    proceed = QtWidgets.QMessageBox.question(
+        Gui.getMainWindow(), "Joint Splitter", "기존 설치를 업데이트할까요?\n" + target_dir,
+        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.Yes
+if proceed:
+    os.makedirs(target_dir, exist_ok=True)
+    for filename in ("Init.py", "InitGui.py", "package.xml", "LICENSE", "README.md"):
+        shutil.copy2(os.path.join(source_dir, filename), os.path.join(target_dir, filename))
+    for dirname in ("joint_splitter", "resources", "docs", "examples"):
+        shutil.copytree(os.path.join(source_dir, dirname), os.path.join(target_dir, dirname),
+                        dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.FCStd1", "*.FCBak"))
+    QtWidgets.QMessageBox.information(Gui.getMainWindow(), "Joint Splitter", "설치 완료. FreeCAD를 재시작한 뒤 Joint Splitter 워크벤치를 선택하세요.\n" + target_dir)

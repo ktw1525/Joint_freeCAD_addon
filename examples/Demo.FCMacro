@@ -1,0 +1,29 @@
+import os
+import sys
+import FreeCAD as App
+import FreeCADGui as Gui
+import Part
+
+addon_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if addon_dir not in sys.path:
+    sys.path.insert(0, addon_dir)
+from joint_splitter.commands import register
+
+doc = App.newDocument("JointSplitterDemo")
+model = doc.addObject("Part::Feature", "DemoModel")
+model.Label = "예제 모델 60 × 40 × 30 mm"
+model.Shape = Part.makeBox(60, 40, 30, App.Vector(-30, -20, -15))
+plane = doc.addObject("Part::Plane", "CuttingPlane")
+plane.Label = "예제 절단면"
+plane.Length = 80
+plane.Width = 60
+plane.Placement.Base = App.Vector(-40, -30, 0)
+plane.ViewObject.Transparency = 75
+doc.recompute()
+Gui.activeDocument().activeView().viewAxonometric()
+Gui.activeDocument().activeView().fitAll()
+Gui.Selection.clearSelection()
+Gui.Selection.addSelection(model)
+Gui.Selection.addSelection(plane)
+register()
+Gui.runCommand("JointSplitter_Split")

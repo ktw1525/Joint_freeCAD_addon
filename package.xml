@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package format="1">
+  <name>JointSplitter</name>
+  <description>Split a solid with a plane into complementary joints with clearance.</description>
+  <version>0.2.0</version>
+  <maintainer>Joint Splitter contributors</maintainer>
+  <license file="LICENSE">MIT</license>
+  <freecadmin>1.0.0</freecadmin>
+  <content><workbench><classname>JointSplitterWorkbench</classname><name>Joint Splitter</name><subdirectory>./</subdirectory></workbench></content>
+</package>
